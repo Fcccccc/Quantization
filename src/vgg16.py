@@ -14,7 +14,6 @@ class Vgg16:
         current_tensor = self.Utils.conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1])
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
-
         current_tensor = self.Utils.conv2d_bn_relu("conv2_1", current_tensor, [3, 3, 64, 128], [1, 1])
         current_tensor = self.Utils.conv2d_bn_relu("conv2_2", current_tensor, [3, 3, 128, 128], [1, 1])
         current_tensor = self.Utils.conv2d_bn_relu("conv2_3", current_tensor, [1, 1, 128, 128], [1, 1])

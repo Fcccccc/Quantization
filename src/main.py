@@ -9,6 +9,7 @@ def train(model, batch_size, data_handle, weight_decay = 0.0005):
     Y = model.Y
     result = model.result
     train  = model.Utils.is_train
+    update = model.Utils.tensor_updated
 
     cross_entropy     = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = Y, logits = result))
     l2_loss           = tf.add_n([tf.nn.l2_loss(var) for var in tf.trainable_variables()])
@@ -29,7 +30,7 @@ def train(model, batch_size, data_handle, weight_decay = 0.0005):
             for x, y in gen():
                 cnt += 1
                 index += 1
-                _, train_loss, train_acc, train_top5_acc = sess.run([train_step, cross_entropy, top1_acc, top5_acc], feed_dict = {X: x,Y: y,train: True})
+                _, train_loss, train_acc, train_top5_acc, *skip = sess.run([train_step, loss, top1_acc, top5_acc] + update, feed_dict = {X: x,Y: y,train: True})
                 if cnt % 10 == 0:
                     print("train epoch = {:d}, loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(epoch, train_loss, train_acc, train_top5_acc))
             if epoch % 5 == 0:

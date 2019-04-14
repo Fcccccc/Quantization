@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 def msra_init(shape, name = "msra_weights"):
-    gen = tf.truncated_normal_initializer(mean = 0.0, stddev = np.sqrt(np.product(shape)))
+    gen = tf.truncated_normal_initializer(mean = 0.0, stddev = np.sqrt(2.0 / np.product(shape)))
     return tf.get_variable(name = name, shape = shape, initializer = gen)  
 
 def zeros_init(shape, name = "zero_weights"):
@@ -18,6 +18,7 @@ class nnUtils:
 
     def __init__(self):
         self.is_train = tf.placeholder(dtype = tf.bool)
+        self.tensor_updated = []
 
     def conv2d(self, input_tensor, kernel, stride, init_func = msra_init, padding = "SAME"):
         assert(len(kernel) == 4)
@@ -26,7 +27,6 @@ class nnUtils:
         conv_res = tf.nn.conv2d(input_tensor, W, [1, stride[0], stride[1], 1], padding = padding)
         return conv_res
         
-
     def quant_conv2d(self, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, padding = "SAME", quant_input = True):
         assert(len(kernel) == 4)
         assert(len(stride) == 2)
@@ -45,11 +45,11 @@ class nnUtils:
         else:
             mean, var = tf.nn.moments(input_tensor, [0])
         update = moving_avg.apply([mean, var])
+        self.tensor_updated.append(update)
         mean = tf.cond(self.is_train, lambda: mean, lambda: moving_avg.average(mean))
         var  = tf.cond(self.is_train, lambda: var, lambda: moving_avg.average(var))
         ret  = tf.nn.batch_normalization(input_tensor, mean, var, bias, scale, eps)
         return ret
-
         
     def conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
@@ -74,7 +74,6 @@ class nnUtils:
             if enable_bias:
                 bias  = zeros_init([kernel[3]], "bn_bias")
             current_tensor = self.bn(current_tensor, scale, bias) 
-            c
             return current_tensor
 
 
