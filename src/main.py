@@ -1,7 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import data_manager
-import vgg16 as model
+# import vgg16 as model
+import resnet18 as model
 
 
 def train(model, batch_size, data_handle, weight_decay = 0.0005):
@@ -44,9 +45,11 @@ def train(model, batch_size, data_handle, weight_decay = 0.0005):
                 print("test epoch = {:d}, loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(epoch, test_loss, test_acc, test_top5_acc))
 
 if __name__ == "__main__":
-    Vgg16 = model.Vgg16([None, 32, 32, 3], [None, 100])
-    Vgg16.build()
+    # Vgg16 = model.Vgg16([None, 32, 32, 3], [None, 100])
+    # Vgg16.build()
+    resnet18 = model.Resnet18([None, 32, 32, 3], [None, 100])
+    resnet18.build()
     data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/test")
     # data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
-    train(Vgg16, 128, data_handle)
+    train(resnet18, 128, data_handle)
 

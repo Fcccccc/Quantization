@@ -51,9 +51,10 @@ class nnUtils:
         ret  = tf.nn.batch_normalization(input_tensor, mean, var, bias, scale, eps)
         return ret
         
-    def conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True):
+
+    def conv2d_bn(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True, padding = "SAME"):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
-            current_tensor = self.conv2d(input_tensor, kernel, stride, init_func)
+            current_tensor = self.conv2d(input_tensor, kernel, stride, init_func, padding)
             scale = None
             bias  = None
             if enable_scale:
@@ -61,8 +62,13 @@ class nnUtils:
             if enable_bias:
                 bias  = zeros_init([kernel[3]], "bn_bias")
             current_tensor = self.bn(current_tensor, scale, bias) 
-            current_tensor = tf.nn.relu(current_tensor)
             return current_tensor
+
+
+    def conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True, padding = "SAME"):
+        current_tensor = self.conv2d_bn(name, input_tensor, kernel, stride, init_func, enable_scale, enable_bias, padding)
+        current_tensor = tf.nn.relu(current_tensor)
+        return current_tensor
 
     def quant_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, enable_scale = True, enable_bias = True):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
