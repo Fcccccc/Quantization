@@ -77,12 +77,16 @@ class nnUtils:
             return current_tensor
 
 
-    def fc(self, input_tensor, shape, init_func = msra_init, enable_bias = True):
+    def fc(self, input_tensor, shape, init_func = msra_init, enable_bn = False, enable_bias = True):
         W = init_func(shape, "fc_weights")
         current_tensor = tf.matmul(input_tensor, W)
         if enable_bias:
             bias = zeros_init([shape[1]], "fc_bias")
             current_tensor = tf.add(current_tensor, bias)
+        if enable_bn:
+            scale = ones_init([shape[1]], "bn_scale")
+            bias  = zeros_init([shape[1]], "bn_bias")
+            current_tensor = self.bn(current_tensor, scale, bias, is_conv = False) 
         return current_tensor
 
     def quant_fc(self, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True):
@@ -96,10 +100,10 @@ class nnUtils:
             current_tensor = tf.add(current_tensor, bias)
         return current_tensor
 
-    def fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True):
+    def fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, enable_bn = False):
 
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
-            current_tensor = self.fc(input_tensor, shape, init_func, enable_bias)
+            current_tensor = self.fc(input_tensor, shape, init_func, enable_bn, enable_bias)
             return tf.nn.relu(current_tensor)
 
     def quant_fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True):

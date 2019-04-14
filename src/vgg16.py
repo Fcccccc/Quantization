@@ -36,8 +36,8 @@ class Vgg16:
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        current_tensor = self.Utils.fc_relu("fc1", current_tensor, [512, 4096])
-        current_tensor = self.Utils.fc_relu("fc2", current_tensor, [4096, 4096])
+        current_tensor = self.Utils.fc_relu("fc1", current_tensor, [512, 4096], enable_bn = True)
+        current_tensor = self.Utils.fc_relu("fc2", current_tensor, [4096, 4096], enable_bn = True)
         self.result    = self.Utils.fc(current_tensor, [4096, 100])
 
    
