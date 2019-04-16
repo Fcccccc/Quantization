@@ -81,6 +81,7 @@ class nnUtils:
                 scale = ones_init([kernel[3]], "bn_scale")
             if enable_bias:
                 bias  = zeros_init([kernel[3]], "bn_bias")
+            current_tensor = self.bn(current_tensor, scale, bias)
             return current_tensor
 
     def quant_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, enable_scale = True, enable_bias = True):

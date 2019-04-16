@@ -14,7 +14,7 @@ class Resnet18_quant:
         self.quant_bits = quant_bits
 
     def build(self):
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
+        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], quant_bits = 8)
 
         current_tensor = self._quant_residual_block(current_tensor, "res_block1", [3, 3, 64, 64])
         current_tensor = self._quant_residual_block(current_tensor, "res_block2", [3, 3, 64, 64])

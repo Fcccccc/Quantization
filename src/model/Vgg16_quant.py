@@ -14,8 +14,8 @@ class Vgg16_quant:
         self.quant_bits = quant_bits
 
     def build(self, quant_bits = 8):
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
-        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1], quant_bits = self.quant_bits)
+        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], quant_bits = 8)
+        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1], quant_bits = 8)
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
         current_tensor = self.Utils.quant_conv2d_bn_relu("conv2_1", current_tensor, [3, 3, 64, 128], [1, 1], quant_bits = self.quant_bits)
