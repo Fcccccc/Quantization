@@ -29,7 +29,7 @@ class Resnet18_quant:
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        self.result    = self.Utils.fc(current_tensor, [512, 100])
+        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits)
 
     def _quant_residual_block(self, input_tensor, name, kernel, div = False):
         if div:

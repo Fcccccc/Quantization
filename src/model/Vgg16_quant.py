@@ -42,7 +42,7 @@ class Vgg16_quant:
 
         current_tensor = self.Utils.quant_fc_relu("fc1", current_tensor, [512, 4096], quant_bits = self.quant_bits)
         current_tensor = self.Utils.quant_fc_relu("fc2", current_tensor, [4096, 4096], quant_bits = self.quant_bits)
-        self.result    = self.Utils.fc(current_tensor, [4096, 100])
+        self.result    = self.Utils.quant_fc(current_tensor, [4096, 100], quant_bits = self.quant_bits)
 
 if __name__ == "__main__":
     vgg16_quant = Vgg16_quant([None, 32, 32, 3], [None, 100], quant_bits = 4)

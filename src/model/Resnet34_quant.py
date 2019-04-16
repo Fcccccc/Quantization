@@ -26,7 +26,7 @@ class Resnet34_quant:
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        self.result    = self.Utils.fc(current_tensor, [512, 100])
+        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits)
 
     def _residual_group(self, input_tensor, name, input_channel, output_channel, cnt, div = False):
         current_tensor = self._residual_block(input_tensor, name + "_block0", [input_channel, output_channel], div = div)

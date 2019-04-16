@@ -113,16 +113,22 @@ class nnUtils:
             current_tensor = tf.add(current_tensor, bias)
         return current_tensor
 
-    def fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, enable_bn = False):
+    def fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, enable_bn = False, enable_dropout = False, rate = 0.2):
 
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
             current_tensor = self.fc(input_tensor, shape, init_func, enable_bn, enable_bias)
-            return tf.nn.relu(current_tensor)
+            current_tensor = tf.nn.relu(current_tensor)
+            if enable_dropout:
+                current_tensor = tf.nn.dropout(current_tensor, rate = rate)
+            return current_tensor
 
-    def quant_fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True):
+    def quant_fc_relu(self, name, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True, enable_dropout = False, rate = 0.2):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
             current_tensor = self.quant_fc(input_tensor, shape, init_func, enable_bias, quant_bits, quant_input)
-            return tf.nn.relu(current_tensor)
+            current_tensor = tf.nn.relu(current_tensor)
+            if enable_dropout:
+                current_tensor = tf.nn.dropout(current_tensor, rate = rate)
+            return current_tensor
 
 
 def train(model, batch_size, data_handle, model_name = "default", weight_decay = 0.0005):
