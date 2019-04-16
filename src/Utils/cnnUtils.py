@@ -72,7 +72,7 @@ class nnUtils:
         current_tensor = tf.nn.relu(current_tensor)
         return current_tensor
 
-    def quant_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, enable_scale = True, enable_bias = True):
+    def quant_conv2d_bn(self, name, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, enable_scale = True, enable_bias = True):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
             current_tensor = self.quant_conv2d(input_tensor, kernel, stride, init_func, quant_bits = quant_bits)
             scale = None
@@ -81,8 +81,12 @@ class nnUtils:
                 scale = ones_init([kernel[3]], "bn_scale")
             if enable_bias:
                 bias  = zeros_init([kernel[3]], "bn_bias")
-            current_tensor = self.bn(current_tensor, scale, bias) 
             return current_tensor
+
+    def quant_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, quant_bits = 8, enable_scale = True, enable_bias = True):
+        current_tensor = self.quant_conv2d_bn(name, input_tensor, kernel, stride, init_func, quant_bits, enable_scale, enable_bias)
+        current_tensor = tf.nn.relu(current_tensor)
+        return current_tensor
 
 
     def fc(self, input_tensor, shape, init_func = msra_init, enable_bn = False, enable_bias = True):

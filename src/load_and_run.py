@@ -8,7 +8,6 @@ from Utils import data_manager, cnnUtils
 
 if __name__ == "__main__":
     model_name = sys.argv[1]
-
     model = importlib.import_module("model." + model_name)
     model_cls = getattr(model, model_name)
     model_obj = model_cls([None, 32, 32, 3], [None, 100])
