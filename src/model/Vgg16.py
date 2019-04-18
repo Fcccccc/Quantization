@@ -1,6 +1,7 @@
 import sys
 import os
 from src.Utils import cnnUtils
+from src.Utils.nnUtils import model_size
 import tensorflow as tf
 import numpy as np
 
@@ -45,6 +46,7 @@ class Vgg16:
 if __name__ == "__main__":
     vgg16 = Vgg16([None, 32, 32, 3], [None, 100])
     vgg16.build()
+    print(model_size("conv"))
 
 
 

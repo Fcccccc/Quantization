@@ -22,6 +22,27 @@ def binary(input_tensor):
             x = tf.clip_by_value(input_tensor, -1, 1)
             return tf.sign(x)
 
+def match(name, pattern):
+    if pattern == None:
+        return True
+    pattern_len = len(pattern)
+    for i in range(len(name) - pattern_len + 1):
+        if name[i: i + pattern_len] == pattern:
+            return True
+    return False
+
+
+def model_size(pattern = None):
+    tot = 0
+    for var in tf.trainable_variables():
+        shape = var.get_shape()
+        if match(var.name, pattern):
+            tmp = 1
+            for dim in shape:
+                tmp *= dim
+            tot += tmp
+    return tot
+
 
 
 
@@ -112,9 +133,5 @@ def train(model, batch_size, data_handle, model_name = "default", enable_prune =
                     if epoch == 125:
                         print("loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(test_loss, test_acc, test_top5_acc), file = fd)
                         print(time.asctime(time.localtime(time.time())) + "   prune finished",file =fd)
-
-
-
-
     fd.close()
 
