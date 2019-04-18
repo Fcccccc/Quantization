@@ -12,7 +12,7 @@ class Vgg16_bnn:
         self.Utils = BNNUtils.nnUtils()
 
     def build(self):
-        current_tensor = self.Utils.bnn_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
+        current_tensor = self.Utils.bnn_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], bn_input = False)
         current_tensor = self.Utils.bnn_conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1])
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
@@ -40,7 +40,7 @@ class Vgg16_bnn:
 
         current_tensor = self.Utils.bnn_fc_relu("fc1", current_tensor, [512, 4096], enable_bn = True, enable_dropout = True)
         current_tensor = self.Utils.bnn_fc_relu("fc2", current_tensor, [4096, 4096], enable_bn = True, enable_dropout = True)
-        self.result    = self.Utils.bnn_fc(current_tensor, [4096, 100])
+        self.result    = self.Utils.bnn_fc(current_tensor, [4096, 100], enable_bn = True)
 
 if __name__ == "__main__":
     vgg16_bnn = Vgg16_bnn([None, 32, 32, 3], [None, 100])

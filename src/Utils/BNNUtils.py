@@ -13,12 +13,13 @@ class nnUtils:
         self.is_train = tf.placeholder(dtype = tf.bool)
         self.tensor_updated = []
 
-    def bnn_conv2d(self, input_tensor, kernel, stride, init_func = msra_init, padding = "SAME"):
+    def bnn_conv2d(self, input_tensor, kernel, stride, init_func = msra_init, bn_input = True, padding = "SAME"):
         assert(len(kernel) == 4)
         assert(len(stride) == 2)
         W = init_func(kernel, "conv_weights")
         W = binary(W)
-        input_tensor = binary(input_tensor)
+        if bn_input == True:
+            input_tensor = binary(input_tensor)
         conv_res = tf.nn.conv2d(input_tensor, W, [1, stride[0], stride[1], 1], padding = padding)
         return conv_res
         
@@ -38,9 +39,9 @@ class nnUtils:
         return ret
         
 
-    def bnn_conv2d_bn(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True, padding = "SAME"):
+    def bnn_conv2d_bn(self, name, input_tensor, kernel, stride, init_func = msra_init, bn_input = True, enable_scale = True, enable_bias = True, padding = "SAME"):
         with tf.variable_scope(name, reuse = tf.AUTO_REUSE):
-            current_tensor = self.bnn_conv2d(input_tensor, kernel, stride, init_func, padding)
+            current_tensor = self.bnn_conv2d(input_tensor, kernel, stride, init_func, bn_input, padding)
             scale = None
             bias  = None
             if enable_scale:
@@ -51,8 +52,8 @@ class nnUtils:
             return current_tensor
 
 
-    def bnn_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, enable_scale = True, enable_bias = True, padding = "SAME"):
-        current_tensor = self.bnn_conv2d_bn(name, input_tensor, kernel, stride, init_func, enable_scale, enable_bias, padding)
+    def bnn_conv2d_bn_relu(self, name, input_tensor, kernel, stride, init_func = msra_init, bn_input = True, enable_scale = True, enable_bias = True, padding = "SAME"):
+        current_tensor = self.bnn_conv2d_bn(name, input_tensor, kernel, stride, init_func, bn_input, enable_scale, enable_bias, padding)
         current_tensor = tf.nn.relu(current_tensor)
         return current_tensor
 
