@@ -7,7 +7,7 @@ from tensorflow.python.framework import ops
 from src.Utils.nnUtils import msra_init, zeros_init, ones_init, binary
 
 
-class nnUtils:
+class BNNUtils:
 
     def __init__(self):
         self.is_train = tf.placeholder(dtype = tf.bool)

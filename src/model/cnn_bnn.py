@@ -4,12 +4,12 @@ from src.Utils import BNNUtils
 import tensorflow as tf
 import numpy as np
 
-class Vgg16_bnn:
+class cnn_bnn:
     def __init__(self, input_shape, output_shape):
         self.X = tf.placeholder(dtype = tf.float32, shape = input_shape)
         self.Y = tf.placeholder(dtype = tf.float32, shape = output_shape)
         self.result   = None
-        self.Utils = BNNUtils.nnUtils()
+        self.Utils = BNNUtils.BNNUtils()
 
     def build(self):
         current_tensor = self.Utils.bnn_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 128], [1, 1], bn_input = False)
@@ -33,8 +33,8 @@ class Vgg16_bnn:
         self.result    = self.Utils.bnn_fc(current_tensor, [1024, 100], enable_bn = True)
 
 if __name__ == "__main__":
-    vgg16_bnn = Vgg16_bnn([None, 32, 32, 3], [None, 100])
-    vgg16_bnn.build()
+    cnn_bnn = cnn_bnn([None, 32, 32, 3], [None, 100])
+    cnn_bnn.build()
 
 
 

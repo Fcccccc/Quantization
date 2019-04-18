@@ -3,6 +3,7 @@ import numpy as np
 import time
 import os
 from tensorflow.python.framework import ops
+from tensorflow.contrib.model_pruning.python import pruning
 
 def msra_init(shape, name = "msra_weights"):
     gen = tf.truncated_normal_initializer(mean = 0.0, stddev = np.sqrt(2.0 / np.product(shape)))
@@ -69,4 +70,11 @@ def train(model, batch_size, data_handle, model_name = "default", weight_decay =
                     print("loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(test_loss, test_acc, test_top5_acc), file = fd)
                     print(time.asctime(time.localtime(time.time())) + "   train finished",file =fd)
     fd.close()
+
+
+if __name__ == "__main__":
+    pruning_hparams = pruning.get_pruning_hparams()
+    pruning_hparams.begin_pruning_step = 10
+    print(pruning_hparams)
+    print(type(pruning_hparams))
 
