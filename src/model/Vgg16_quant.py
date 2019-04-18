@@ -9,7 +9,7 @@ class Vgg16_quant:
         self.X = tf.placeholder(dtype = tf.float32, shape = input_shape)
         self.Y = tf.placeholder(dtype = tf.float32, shape = output_shape)
         self.result   = None
-        self.Utils = cnnUtils.nnUtils()
+        self.Utils = cnnUtils.cnnUtils()
         self.quant_bits = quant_bits
 
     def build(self, quant_bits = 8):

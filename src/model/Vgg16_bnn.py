@@ -38,8 +38,8 @@ class Vgg16_bnn:
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        current_tensor = self.Utils.bnn_fc_relu("fc1", current_tensor, [512, 4096], enable_bn = True, enable_dropout = True)
-        current_tensor = self.Utils.bnn_fc_relu("fc2", current_tensor, [4096, 4096], enable_bn = True, enable_dropout = True)
+        current_tensor = self.Utils.bnn_fc_relu("fc1", current_tensor, [512, 4096], enable_bn = True)
+        current_tensor = self.Utils.bnn_fc_relu("fc2", current_tensor, [4096, 4096], enable_bn = True)
         self.result    = self.Utils.bnn_fc(current_tensor, [4096, 100], enable_bn = True)
 
 if __name__ == "__main__":
