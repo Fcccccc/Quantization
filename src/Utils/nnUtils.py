@@ -3,6 +3,7 @@ import numpy as np
 import time
 import os
 from tensorflow.python.framework import ops
+from tensorflow.contrib.model_pruning.python import pruning
 
 def msra_init(shape, name = "msra_weights"):
     gen = tf.truncated_normal_initializer(mean = 0.0, stddev = np.sqrt(2.0 / np.product(shape)))
@@ -23,13 +24,24 @@ def binary(input_tensor):
 
 
 
-def train(model, batch_size, data_handle, model_name = "default", weight_decay = 0.0005):
+
+def train(model, batch_size, data_handle, model_name = "default", enable_prune = False):
+    # hypeparams = {
+            # "weights_decay":0.0005,
+            # "lr":0.01,
+            # "enable_prune":False
+                    # }
+
+
     X = model.X
     Y = model.Y
     result = model.result
     train  = model.Utils.is_train
     update = model.Utils.tensor_updated
     learning_rate = tf.placeholder(tf.float32)
+    global_step = tf.train.get_or_create_global_step()
+    weight_decay = 0.0005
+
     if not os.path.exists("log"):
         os.mkdir("log")
     fd = open("log/" + model_name, "a")
@@ -45,6 +57,15 @@ def train(model, batch_size, data_handle, model_name = "default", weight_decay =
     top5              = tf.nn.in_top_k(predictions = result, targets = tf.argmax(Y, 1), k = 5) 
     top5_acc          = tf.reduce_mean(tf.cast(top5, "float"))
 
+
+    if enable_prune:
+        pruning_hparams = pruning.get_pruning_hparams()
+        pruning_hparams.begin_pruning_step = 0
+        pruning_hparams.end_pruning_step   = -1
+        pruning_hparams.pruning_frequency  = 5
+        pruning_hparams.target_sparsity    = 0.6
+        p = pruning.Pruning(pruning_hparams, global_step = global_step, sparsity = 0.6)
+        prune_op = p.conditional_mask_update_op()
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         index = 0
@@ -68,5 +89,32 @@ def train(model, batch_size, data_handle, model_name = "default", weight_decay =
                 if epoch == 125:
                     print("loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(test_loss, test_acc, test_top5_acc), file = fd)
                     print(time.asctime(time.localtime(time.time())) + "   train finished",file =fd)
+
+        if enable_prune:
+
+            print(time.asctime(time.localtime(time.time())) + "   prune started",file =fd)
+            lr = 0.0001
+            for epoch in range(1, 50 + 1):
+                gen = data_handle.epoch_data_train(batch_size)
+                cnt = 0
+                if epoch == 25: lr /= 10
+                for x, y in gen():
+                    cnt += 1
+                    index += 1
+                    sess.run(prune_op)
+                    _, train_loss, train_acc, train_top5_acc, *skip = sess.run([train_step, loss, top1_acc, top5_acc] + update, feed_dict = {X: x,Y: y,train: True, learning_rate: lr})
+                    if cnt % 10 == 0:
+                        print("train epoch = {:d}, loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(epoch, train_loss, train_acc, train_top5_acc))
+                if epoch % 5 == 0:
+                    x, y = data_handle.data_test()
+                    test_loss, test_acc, test_top5_acc = sess.run([loss, top1_acc, top5_acc], feed_dict = {X: x, Y: y, train: False})
+                    print("test epoch = {:d}, loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(epoch, test_loss, test_acc, test_top5_acc))
+                    if epoch == 125:
+                        print("loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(test_loss, test_acc, test_top5_acc), file = fd)
+                        print(time.asctime(time.localtime(time.time())) + "   prune finished",file =fd)
+
+
+
+
     fd.close()
 
