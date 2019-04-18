@@ -1,7 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(".."))
-from Utils import cnnUtils
+from src.Utils import cnnUtils
 import tensorflow as tf
 import numpy as np
 
@@ -10,7 +9,7 @@ class Vgg16:
         self.X = tf.placeholder(dtype = tf.float32, shape = input_shape)
         self.Y = tf.placeholder(dtype = tf.float32, shape = output_shape)
         self.result   = None
-        self.Utils = cnnUtils.nnUtils()
+        self.Utils = cnnUtils.cnnUtils()
 
     def build(self):
         current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])

@@ -3,7 +3,7 @@ import tensorflow as tf
 import sys
 import os
 import importlib
-from Utils import data_manager, cnnUtils
+from src.Utils import data_manager, nnUtils
 
 
 if __name__ == "__main__":
@@ -22,6 +22,6 @@ if __name__ == "__main__":
     model_obj.build()
     data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/test")
     # data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
-    cnnUtils.train(model_obj, 128, data_handle, model_name)
+    nnUtils.train(model_obj, 128, data_handle, model_name)
  
 

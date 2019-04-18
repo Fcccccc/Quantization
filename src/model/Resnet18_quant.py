@@ -1,7 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(".."))
-from Utils import cnnUtils
+from src.Utils import cnnUtils
 import tensorflow as tf
 import numpy as np
 
