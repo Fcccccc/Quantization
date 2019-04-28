@@ -3,7 +3,7 @@ import numpy as np
 import time
 import os
 import sys
-from src.Utils.nnUtils import msra_init, ones_init, zeros_init
+from src.Utils.nnUtils import msra_init, ones_init, zeros_init, fake_quant
 from tensorflow.contrib.model_pruning.python import pruning
 
 
@@ -26,11 +26,11 @@ class cnnUtils:
         assert(len(kernel) == 4)
         assert(len(stride) == 2)
         W = init_func(kernel, "conv_weights")
-        W = tf.fake_quant_with_min_max_vars(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
+        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if enable_prune:
             W = pruning.apply_mask(W)
         if quant_input == True:
-            input_tensor = tf.fake_quant_with_min_max_vars(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
+            input_tensor = fake_quant(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
         conv_res = tf.nn.conv2d(input_tensor, W, [1, stride[0], stride[1], 1], padding = padding)
         return conv_res
 
@@ -101,11 +101,11 @@ class cnnUtils:
 
     def quant_fc(self, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True, enable_prune = False):
         W = init_func(shape, "fc_weights")
-        W = tf.fake_quant_with_min_max_vars(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
+        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if enable_prune:
             W = pruning.apply_mask(W)
         if quant_input == True:
-            input_tensor = tf.fake_quant_with_min_max_vars(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
+            input_tensor = fake_quant(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
         current_tensor = tf.matmul(input_tensor, W)
         if enable_bias:
             bias = zeros_init([shape[1]], "fc_bias")

@@ -1,16 +1,14 @@
 import sys
 import os
 from src.Utils import cnnUtils
-from src.Utils.nnUtils import model_size
 import tensorflow as tf
 import numpy as np
+from src.normal_model.base import normal_base
 
-class Resnet18_prune:
-    def __init__(self, input_shape, output_shape):
-        self.X = tf.placeholder(dtype = tf.float32, shape = input_shape)
-        self.Y = tf.placeholder(dtype = tf.float32, shape = output_shape)
-        self.result   = None
-        self.Utils = cnnUtils.cnnUtils()
+class Resnet18(normal_base):
+
+    def __init__(self, hyperparams):
+        normal_base.__init__(self, hyperparams)
 
     def build(self):
         current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
@@ -28,7 +26,7 @@ class Resnet18_prune:
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        self.result    = self.Utils.fc(current_tensor, [512, 100])
+        self.result    = self.Utils.fc(current_tensor, [512, 100], enable_prune = True)
 
     def _residual_block(self, input_tensor, name, kernel, div = False, enable_prune = False):
         if div:
@@ -44,9 +42,10 @@ class Resnet18_prune:
 
    
 if __name__ == "__main__":
-    resnet18_prune = Resnet18_prune([None, 32, 32, 3], [None, 100])
-    resnet18_prune.build()
-    print(model_size())
+    resnet18= Resnet18({
+        "input_shape":[None, 32, 32, 3],
+        "output_shape":[None, 100]})
+    resnet18.build()
 
 
 
