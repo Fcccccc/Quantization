@@ -100,7 +100,9 @@ class Trainer:
 
 
         # init_variable
-        self.sess = tf.Session()
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        self.sess = tf.Session(config = config)
         self.sess.run(tf.global_variables_initializer())
 
     def __del__(self):

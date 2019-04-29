@@ -12,6 +12,7 @@ class cnnUtils:
     def __init__(self):
         self.is_train = tf.placeholder(dtype = tf.bool)
         self.tensor_updated = []
+        self.prune_weights  = []
 
     def conv2d(self, input_tensor, kernel, stride, init_func = msra_init, padding = "SAME", enable_prune = False):
         assert(len(kernel) == 4)
@@ -19,6 +20,7 @@ class cnnUtils:
         W = init_func(kernel, "conv_weights")
         if enable_prune:
             W = pruning.apply_mask(W)
+            self.prune_weights.append(W)
         conv_res = tf.nn.conv2d(input_tensor, W, [1, stride[0], stride[1], 1], padding = padding)
         return conv_res
         
@@ -26,9 +28,10 @@ class cnnUtils:
         assert(len(kernel) == 4)
         assert(len(stride) == 2)
         W = init_func(kernel, "conv_weights")
-        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if enable_prune:
             W = pruning.apply_mask(W)
+            self.prune_weights.append(W)
+        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if quant_input == True:
             input_tensor = fake_quant(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
         conv_res = tf.nn.conv2d(input_tensor, W, [1, stride[0], stride[1], 1], padding = padding)
@@ -89,6 +92,7 @@ class cnnUtils:
         W = init_func(shape, "fc_weights")
         if enable_prune:
             W = pruning.apply_mask(W)
+            self.prune_weights.append(W)
         current_tensor = tf.matmul(input_tensor, W)
         if enable_bias:
             bias = zeros_init([shape[1]], "fc_bias")
@@ -101,9 +105,10 @@ class cnnUtils:
 
     def quant_fc(self, input_tensor, shape, init_func = msra_init, enable_bias = True, quant_bits = 8, quant_input = True, enable_prune = False):
         W = init_func(shape, "fc_weights")
-        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if enable_prune:
             W = pruning.apply_mask(W)
+            self.prune_weights.append(W)
+        W = fake_quant(W, min = tf.reduce_min(W), max = tf.reduce_max(W), num_bits = quant_bits)
         if quant_input == True:
             input_tensor = fake_quant(input_tensor, min = tf.reduce_min(input_tensor), max = tf.reduce_max(input_tensor), num_bits = quant_bits)
         current_tensor = tf.matmul(input_tensor, W)
