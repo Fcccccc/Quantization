@@ -14,8 +14,8 @@ hyperparams = {
         "input_shape":[None, 32, 32, 3],
         "output_shape":[None, 100],
         "train_batchsize":128,
-        "train_epoch":1,
-        # "train_epoch":125,
+        # "train_epoch":5,
+        "train_epoch":125,
         "train_lr":0.01,
         "train_lr_reduce":[50, 75, 100],
         "weights_decay":0.0005,
@@ -23,8 +23,8 @@ hyperparams = {
         "quant_bits":False,
         "enable_prune":False,
         "prune_batchsize":128,
-        "prune_epoch":1,
-        # "prune_epoch":50,
+        # "prune_epoch":1,
+        "prune_epoch":50,
         "prune_lr":0.001,
         "prune_lr_reduce":[25],
         "begin_pruning_step":0,
@@ -38,8 +38,9 @@ def do_train(model_obj, hyperparams):
     if not os.path.exists("../var"):
         os.mkdir("../var")
     os.chdir("../var")
+    data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/train")
     # data_handle = data_manager.Data_Manager("/home/jason/Draft/cifar-100-python/train", "/home/jason/Draft/cifar-100-python/test")
-    data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
+    # data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
     trainer = nnUtils.Trainer(model_obj, data_handle, hyperparams)
     print(type(trainer))
     trainer.do_train()

@@ -65,8 +65,9 @@ class Trainer:
         self.train  = self.model.Utils.is_train
         self.update = self.model.Utils.tensor_updated
         self.learning_rate = tf.placeholder(tf.float32)
-        self.global_step = tf.train.get_or_create_global_step()
+        self.global_step = tf.Variable(0, dtype = tf.int32, trainable = False)
         self.weights_decay = self.hyperparams['weights_decay']
+        self.global_step_update = tf.assign_add(self.global_step, tf.constant(2, dtype = tf.int32))
 
         # optimizer
         self.cross_entropy     = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels = self.Y, logits = self.result))
@@ -87,14 +88,14 @@ class Trainer:
             pruning_hparams.end_pruning_step   = self.hyperparams['end_pruning_step']
             pruning_hparams.pruning_frequency  = self.hyperparams['pruning_frequency']
             pruning_hparams.target_sparsity    = self.hyperparams['target_sparsity']
-            p = pruning.Pruning(pruning_hparams, global_step = self.global_step, sparsity = pruning_hparams.target_sparsity)
+            p = pruning.Pruning(pruning_hparams, global_step = self.global_step)
             self.prune_op = p.conditional_mask_update_op()
 
         # log
         if not os.path.exists("log"):
             os.mkdir("log")
         self.fd = open("log/" + self.hyperparams['model_name'], "a")
-        print("model_name = {}, quant_bits = {}, enable_prune = {}".format(self.hyperparams['model_name'], self.hyperparams['quant_bits'], self.hyperparams['enable_prune']), file = self.fd)
+        print("model_name = {}, quant_bits = {}, enable_prune = {}".format(self.hyperparams['model_name'], self.hyperparams['quant_bits'], self.hyperparams['target_sparsity']), file = self.fd)
         print(time.asctime(time.localtime(time.time())) + "   train started", file = self.fd)
 
 
@@ -117,6 +118,7 @@ class Trainer:
                 lr /= 10
             for x, y in gen():
                 cnt += 1
+                # print(self.sess.run(self.global_step))
                 if other_update is not None:
                     self.sess.run(other_update)
                 _, train_loss, train_acc, train_top5_acc, *skip = self.sess.run([self.train_step, self.loss, self.top1_acc, self.top5_acc] + self.update, feed_dict = {self.X: x,self.Y: y,self.train: True, self.learning_rate: lr})
@@ -129,6 +131,45 @@ class Trainer:
                 if epoch == epoch_max:
                     print("loss = {:f}, top_1_acc = {:f}, top_5_acc = {:f}".format(test_loss, test_acc, test_top5_acc), file = self.fd)
                     print(time.asctime(time.localtime(time.time())) + "   train finished",file = self.fd)
+            if other_update is not None:
+                print(self.sess.run(self.global_step))
+                self.sess.run(self.global_step_update)
+
+
+    def __make_dirs(self, filename):
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+         
+    def __dump(slef, filename, nparray):
+        with open(filename, "w") as fd:
+            for elem in nparray:
+                print(elem, file = fd)
+
+
+
+    def __dump_quant_weights(self, filename, tensor):
+        self.__make_dirs(filename)
+        tmp_data = fake_quant(tensor, min = tf.reduce_min(tensor), max = tf.reduce_max(tensor), num_bits = self.hyperparams['quant_bits'])
+        tmp_data = (tmp_data - tf.reduce_min(tmp_data)) / (tf.reduce_max(tmp_data) - tf.reduce_min(tmp_data)) * (2 ** self.hyperparams['quant_bits'] - 1)
+        quant_data = self.sess.run(tmp_data)
+        quant_data = np.reshape(quant_data, -1)
+        self.__dump(filename, quant_data)
+
+
+    def __dump_weights(self, filename, tensor):
+        self.__make_dirs(filename)
+        data = self.sess.run(tensor)
+        data = np.reshape(data, (-1))
+        self.__dump(filename, data)
+
+    def __dump_all_weights(self, prefix, tensor):
+        filename = prefix + tensor.name + "_float32"
+        self.__dump_weights(filename, tensor)
+        if self.hyperparams['enable_quant']:
+            filename = prefix + tensor.name + "_quant"
+            self.__dump_quant_weights(filename, tensor)
+
+
 
     def dump_weights(self):
         train_var_name = tf.trainable_variables()
@@ -137,23 +178,12 @@ class Trainer:
         for var_name in train_var_name:
             total_var.append(tf.get_default_graph().get_tensor_by_name(var_name.name))
         for tensor in total_var:
-            file_name = prefix + tensor.name + "_float32"
-            data = self.sess.run(tensor)
-            data = np.reshape(data, (-1))
-            if not os.path.exists(os.path.dirname(file_name)):
-                os.makedirs(os.path.dirname(file_name))
-            with open(file_name, "w") as fd:
-                for elem in data:
-                    print(elem, file = fd)
-            if self.hyperparams['enable_quant']:
-                tmp_data = fake_quant(tensor, min = tf.reduce_min(tensor), max = tf.reduce_max(tensor), num_bits = self.hyperparams['quant_bits'])
-                quant_data = self.sess.run(tmp_data)
-                quant_data = np.reshape(quant_data, -1)
-                quant_file_name = prefix + tensor.name + "_quant"
-                with open(quant_file_name, "w") as fd:
-                    for elem in quant_data:
-                        print(elem, file = fd)
-
+            self.__dump_all_weights(prefix, tensor)
+        if self.hyperparams['enable_prune']:
+            prefix += "prune/"
+            for tensor in self.model.Utils.prune_weights:
+                self.__dump_all_weights(prefix, tensor)
+     
 
     def do_train(self):
         self.train_all_epoch(self.hyperparams['train_batchsize'], self.hyperparams['train_epoch'], self.hyperparams['train_lr'], self.hyperparams['train_lr_reduce'])
