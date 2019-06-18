@@ -1,0 +1,56 @@
+model_name = Alexnet, quant_bits = False, enable_prune = 0.6
+Thu May  2 23:22:31 2019   train started
+loss = 1.991311, top_1_acc = 0.573100, top_5_acc = 0.843200
+Thu May  2 23:32:25 2019   train finished
+loss = 2.026869, top_1_acc = 0.564700, top_5_acc = 0.837700
+Thu May  2 23:36:27 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.65
+Thu May  2 23:36:34 2019   train started
+loss = 1.982976, top_1_acc = 0.576900, top_5_acc = 0.846400
+Thu May  2 23:46:21 2019   train finished
+loss = 2.014321, top_1_acc = 0.563900, top_5_acc = 0.836400
+Thu May  2 23:50:26 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.7
+Thu May  2 23:50:34 2019   train started
+loss = 1.962484, top_1_acc = 0.573900, top_5_acc = 0.851600
+Fri May  3 00:00:20 2019   train finished
+loss = 2.004425, top_1_acc = 0.554100, top_5_acc = 0.839400
+Fri May  3 00:04:25 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.75
+Fri May  3 00:04:33 2019   train started
+loss = 1.962460, top_1_acc = 0.576700, top_5_acc = 0.850400
+Fri May  3 00:14:11 2019   train finished
+loss = 2.039375, top_1_acc = 0.544200, top_5_acc = 0.830600
+Fri May  3 00:18:16 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.8
+Fri May  3 00:18:24 2019   train started
+loss = 1.964198, top_1_acc = 0.575800, top_5_acc = 0.850200
+Fri May  3 00:28:11 2019   train finished
+loss = 2.071765, top_1_acc = 0.525000, top_5_acc = 0.818200
+Fri May  3 00:32:15 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.85
+Fri May  3 00:32:23 2019   train started
+loss = 1.971218, top_1_acc = 0.577000, top_5_acc = 0.846300
+Fri May  3 00:42:05 2019   train finished
+loss = 2.163310, top_1_acc = 0.504900, top_5_acc = 0.800300
+Fri May  3 00:46:10 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.9
+Fri May  3 00:46:18 2019   train started
+loss = 1.982982, top_1_acc = 0.576700, top_5_acc = 0.844500
+Fri May  3 00:55:56 2019   train finished
+loss = 2.447365, top_1_acc = 0.435700, top_5_acc = 0.752000
+Fri May  3 00:59:59 2019   train finished
+train successfully
+model_name = Alexnet, quant_bits = False, enable_prune = 0.95
+Fri May  3 01:00:07 2019   train started
+loss = 1.957139, top_1_acc = 0.575700, top_5_acc = 0.848900
+Fri May  3 01:09:50 2019   train finished
+loss = 3.261879, top_1_acc = 0.275200, top_5_acc = 0.584100
+Fri May  3 01:13:54 2019   train finished
+train successfully

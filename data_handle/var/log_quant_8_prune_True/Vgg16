@@ -1,0 +1,56 @@
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.6
+Mon May  6 16:31:42 2019   train started
+loss = 2.314229, top_1_acc = 0.663000, top_5_acc = 0.872800
+Mon May  6 18:37:05 2019   train finished
+loss = 2.494099, top_1_acc = 0.656600, top_5_acc = 0.867600
+Mon May  6 19:27:08 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.65
+Mon May  6 19:27:21 2019   train started
+loss = 2.352090, top_1_acc = 0.665600, top_5_acc = 0.865400
+Mon May  6 21:32:02 2019   train finished
+loss = 2.514326, top_1_acc = 0.652100, top_5_acc = 0.859700
+Mon May  6 22:21:42 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.7
+Mon May  6 22:21:55 2019   train started
+loss = 2.330170, top_1_acc = 0.662200, top_5_acc = 0.867200
+Tue May  7 00:24:58 2019   train finished
+loss = 2.452228, top_1_acc = 0.648600, top_5_acc = 0.860400
+Tue May  7 01:14:36 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.75
+Tue May  7 01:14:48 2019   train started
+loss = 2.326458, top_1_acc = 0.664500, top_5_acc = 0.869900
+Tue May  7 03:17:43 2019   train finished
+loss = 2.376521, top_1_acc = 0.641200, top_5_acc = 0.853900
+Tue May  7 04:07:14 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.8
+Tue May  7 04:07:27 2019   train started
+loss = 2.288732, top_1_acc = 0.664500, top_5_acc = 0.871300
+Tue May  7 06:10:31 2019   train finished
+loss = 2.232176, top_1_acc = 0.636500, top_5_acc = 0.856800
+Tue May  7 07:00:15 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.85
+Tue May  7 07:00:28 2019   train started
+loss = 2.314286, top_1_acc = 0.664600, top_5_acc = 0.868300
+Tue May  7 09:03:57 2019   train finished
+loss = 2.183538, top_1_acc = 0.623200, top_5_acc = 0.850200
+Tue May  7 09:53:35 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.9
+Tue May  7 09:53:48 2019   train started
+loss = 2.283176, top_1_acc = 0.663900, top_5_acc = 0.870800
+Tue May  7 12:00:15 2019   train finished
+loss = 2.124218, top_1_acc = 0.598900, top_5_acc = 0.841400
+Tue May  7 12:50:44 2019   train finished
+train successfully
+model_name = Vgg16, quant_bits = 8, enable_prune = 0.95
+Tue May  7 12:50:57 2019   train started
+loss = 2.321431, top_1_acc = 0.658700, top_5_acc = 0.868600
+Tue May  7 14:55:50 2019   train finished
+loss = 2.581245, top_1_acc = 0.479500, top_5_acc = 0.770200
+Tue May  7 15:45:25 2019   train finished
+train successfully

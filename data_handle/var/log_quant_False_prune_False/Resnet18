@@ -1,0 +1,56 @@
+model_name = Resnet18, quant_bits = False, enable_prune = 0.7
+Thu May  2 23:23:32 2019   train started
+loss = 1.518982, top_1_acc = 0.757600, top_5_acc = 0.933400
+Fri May  3 00:58:35 2019   train finished
+loss = 1.448740, top_1_acc = 0.749700, top_5_acc = 0.927300
+Fri May  3 01:36:59 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.85
+Thu May  2 23:23:38 2019   train started
+loss = 1.518893, top_1_acc = 0.757500, top_5_acc = 0.931700
+Fri May  3 01:00:16 2019   train finished
+loss = 1.434611, top_1_acc = 0.743500, top_5_acc = 0.930900
+Fri May  3 01:39:13 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.6
+Fri May  3 01:14:06 2019   train started
+loss = 1.516437, top_1_acc = 0.759800, top_5_acc = 0.933800
+Fri May  3 02:47:00 2019   train finished
+loss = 1.433049, top_1_acc = 0.757100, top_5_acc = 0.932400
+Fri May  3 03:24:30 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.75
+Fri May  3 01:37:10 2019   train started
+loss = 1.529013, top_1_acc = 0.752600, top_5_acc = 0.934700
+Fri May  3 03:12:28 2019   train finished
+loss = 1.443782, top_1_acc = 0.749200, top_5_acc = 0.930500
+Fri May  3 03:50:51 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.9
+Fri May  3 01:39:25 2019   train started
+loss = 1.529644, top_1_acc = 0.752100, top_5_acc = 0.933700
+Fri May  3 03:15:52 2019   train finished
+loss = 1.456824, top_1_acc = 0.731000, top_5_acc = 0.928900
+Fri May  3 03:54:43 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.65
+Fri May  3 03:24:42 2019   train started
+loss = 1.502096, top_1_acc = 0.755600, top_5_acc = 0.934600
+Fri May  3 04:57:57 2019   train finished
+loss = 1.420500, top_1_acc = 0.755800, top_5_acc = 0.930900
+Fri May  3 05:35:34 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.8
+Fri May  3 03:51:03 2019   train started
+loss = 1.529979, top_1_acc = 0.752200, top_5_acc = 0.931900
+Fri May  3 05:25:56 2019   train finished
+loss = 1.452410, top_1_acc = 0.740100, top_5_acc = 0.927900
+Fri May  3 06:04:16 2019   train finished
+train successfully
+model_name = Resnet18, quant_bits = False, enable_prune = 0.95
+Fri May  3 03:54:55 2019   train started
+loss = 1.544862, top_1_acc = 0.752800, top_5_acc = 0.931700
+Fri May  3 05:31:25 2019   train finished
+loss = 1.563647, top_1_acc = 0.703900, top_5_acc = 0.917300
+Fri May  3 06:10:15 2019   train finished
+train successfully
