@@ -11,13 +11,13 @@ class Resnet18(normal_base):
         normal_base.__init__(self, hyperparams)
 
     def build(self):
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], enable_prune = True)
 
-        current_tensor = self._residual_block(current_tensor, "res_block1", [3, 3, 64, 64])
-        current_tensor = self._residual_block(current_tensor, "res_block2", [3, 3, 64, 64])
-        current_tensor = self._residual_block(current_tensor, "res_block3", [3, 3, 64, 128], div = True)
+        current_tensor = self._residual_block(current_tensor, "res_block1", [3, 3, 64, 64], enable_prune = True)
+        current_tensor = self._residual_block(current_tensor, "res_block2", [3, 3, 64, 64], enable_prune = True)
+        current_tensor = self._residual_block(current_tensor, "res_block3", [3, 3, 64, 128], div = True, enable_prune = True)
         current_tensor = self._residual_block(current_tensor, "res_block4", [3, 3, 128, 128])
-        current_tensor = self._residual_block(current_tensor, "res_block5", [3, 3, 128, 256], div = True)
+        current_tensor = self._residual_block(current_tensor, "res_block5", [3, 3, 128, 256], div = True, enable_prune = True)
         current_tensor = self._residual_block(current_tensor, "res_block6", [3, 3, 256, 256], enable_prune = True)
         current_tensor = self._residual_block(current_tensor, "res_block7", [3, 3, 256, 512], div = True, enable_prune = True)
         current_tensor = self._residual_block(current_tensor, "res_block8", [3, 3, 512, 512], enable_prune = True)
@@ -30,10 +30,10 @@ class Resnet18(normal_base):
 
     def _residual_block(self, input_tensor, name, kernel, div = False, enable_prune = False):
         if div:
-            current_tensor = self.Utils.conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [2, 2])
+            current_tensor = self.Utils.conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [2, 2], enable_prune = True)
             shortcut = self.Utils.conv2d_bn(name + "_shortcut", input_tensor, kernel, [2, 2])
         else:
-            current_tensor = self.Utils.conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [1, 1])
+            current_tensor = self.Utils.conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [1, 1], enable_prune = True)
             shortcut = input_tensor
         kernel[2] = kernel[3]
         current_tensor = self.Utils.conv2d_bn(name + "_conv2", current_tensor, kernel, [1, 1], enable_prune = enable_prune)

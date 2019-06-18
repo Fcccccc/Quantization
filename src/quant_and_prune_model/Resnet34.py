@@ -10,11 +10,11 @@ class Resnet34(quant_base):
         quant_base.__init__(self, hyperparams)
 
     def build(self):
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], enable_prune = True)
 
-        current_tensor = self._residual_group(current_tensor, "res_group0", 64, 64, cnt = 3)
-        current_tensor = self._residual_group(current_tensor, "res_group1", 64, 128, div = True, cnt = 4)
-        current_tensor = self._residual_group(current_tensor, "res_group2", 128, 256, div = True, cnt = 6)
+        current_tensor = self._residual_group(current_tensor, "res_group0", 64, 64, cnt = 3, enable_prune = True)
+        current_tensor = self._residual_group(current_tensor, "res_group1", 64, 128, div = True, cnt = 4, enable_prune = True)
+        current_tensor = self._residual_group(current_tensor, "res_group2", 128, 256, div = True, cnt = 6, enable_prune = True)
         current_tensor = self._residual_group(current_tensor, "res_group3", 256, 512, div = True, cnt = 3, enable_prune = True)
 
  
@@ -22,10 +22,10 @@ class Resnet34(quant_base):
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits)
+        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits, enable_prune = True)
 
     def _residual_group(self, input_tensor, name, input_channel, output_channel, cnt, div = False, enable_prune = False):
-        current_tensor = self._residual_block(input_tensor, name + "_block0", [input_channel, output_channel], div = div)
+        current_tensor = self._residual_block(input_tensor, name + "_block0", [input_channel, output_channel], div = div, enable_prune = enable_prune)
         for i in range(1, cnt):
             current_tensor = self._residual_block(current_tensor, name + "_block" + str(i), [input_channel, output_channel], enable_prune = enable_prune)
         return current_tensor
@@ -34,10 +34,10 @@ class Resnet34(quant_base):
         input_channel = kernel[0]
         output_channel = kernel[1]
         if div:
-            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv0", input_tensor, [3, 3, input_channel, output_channel], [2, 2], quant_bits = self.quant_bits)
+            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv0", input_tensor, [3, 3, input_channel, output_channel], [2, 2], quant_bits = self.quant_bits, enable_prune = enable_prune)
             shortcut = self.Utils.quant_conv2d_bn(name + "_shortcut", input_tensor, [3, 3, input_channel, output_channel], [2, 2], quant_bits = self.quant_bits)
         else:
-            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv0", input_tensor, [3, 3, output_channel, output_channel], [1, 1], quant_bits = self.quant_bits)
+            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv0", input_tensor, [3, 3, output_channel, output_channel], [1, 1], quant_bits = self.quant_bits, enable_prune = enable_prune)
             shortcut = input_tensor
         current_tensor = self.Utils.quant_conv2d_bn(name + "_conv1", current_tensor, [3, 3, output_channel, output_channel], [1, 1], quant_bits = self.quant_bits, enable_prune = enable_prune)
         current_tensor = tf.add(current_tensor, shortcut)

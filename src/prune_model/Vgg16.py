@@ -11,23 +11,23 @@ class Vgg16(normal_base):
         normal_base.__init__(self, hyperparams)
 
     def build(self):
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv1_2", current_tensor, [3, 3, 64, 64], [1, 1], enable_prune = True)
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
-        current_tensor = self.Utils.conv2d_bn_relu("conv2_1", current_tensor, [3, 3, 64, 128], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv2_2", current_tensor, [3, 3, 128, 128], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv2_3", current_tensor, [1, 1, 128, 128], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv2_1", current_tensor, [3, 3, 64, 128], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv2_2", current_tensor, [3, 3, 128, 128], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv2_3", current_tensor, [1, 1, 128, 128], [1, 1], enable_prune = True)
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
-        current_tensor = self.Utils.conv2d_bn_relu("conv3_1", current_tensor, [3, 3, 128, 256], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv3_2", current_tensor, [3, 3, 256, 256], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv3_3", current_tensor, [1, 1, 256, 256], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv3_1", current_tensor, [3, 3, 128, 256], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv3_2", current_tensor, [3, 3, 256, 256], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv3_3", current_tensor, [1, 1, 256, 256], [1, 1], enable_prune = True)
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
-        current_tensor = self.Utils.conv2d_bn_relu("conv4_1", current_tensor, [3, 3, 256, 512], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv4_1", current_tensor, [3, 3, 256, 512], [1, 1], enable_prune = True)
         current_tensor = self.Utils.conv2d_bn_relu("conv4_2", current_tensor, [3, 3, 512, 512], [1, 1], enable_prune = True)
-        current_tensor = self.Utils.conv2d_bn_relu("conv4_3", current_tensor, [1, 1, 512, 512], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv4_3", current_tensor, [1, 1, 512, 512], [1, 1], enable_prune = True)
         current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
         current_tensor = self.Utils.conv2d_bn_relu("conv5_1", current_tensor, [3, 3, 512, 512], [1, 1], enable_prune = True)

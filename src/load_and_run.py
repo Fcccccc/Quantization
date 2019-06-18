@@ -38,9 +38,9 @@ def do_train(model_obj, hyperparams):
     if not os.path.exists("../var"):
         os.mkdir("../var")
     os.chdir("../var")
-    data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/train")
+    # data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/train")
     # data_handle = data_manager.Data_Manager("/home/jason/Draft/cifar-100-python/train", "/home/jason/Draft/cifar-100-python/test")
-    # data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
+    data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
     trainer = nnUtils.Trainer(model_obj, data_handle, hyperparams)
     print(type(trainer))
     trainer.do_train()
@@ -89,7 +89,7 @@ def main():
     if args.size == None or args.size:
         cnt_bits = int(nnUtils.model_size(args.size))
         cnt_bits *= 32
-        print("{:f} bits, {:f} B, {:f} KB, {:f} MB".format(cnt_bits, cnt_bits / 8, cnt_bits / (8 * 1024), cnt_bits / (8 * 1024 * 1024)))
+        print("{:f} s, {:f} bits, {:f} B, {:f} KB, {:f} MB".format(cnt_bits / 32, cnt_bits, cnt_bits / 8, cnt_bits / (8 * 1024), cnt_bits / (8 * 1024 * 1024)))
 
     else:
         do_train(model_obj, hyperparams)
@@ -97,41 +97,4 @@ def main():
 
 
 main()
-
-# if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-q", "--quant_bits", help = "num_bits used to quantize the model", type = int, nargs = '?', default = False)
-    # parser.add_argument("-m", "--model_name", help = "model_name")
-    # parser.add_argument("-p", "--prune_on", dest = "enable_prune", help = "enable_prune", action = "store_true")
-    # args = parser.parse_args()
-    # print(args)
-    # if args.quant_bits == None:
-        # args.quant_bits = 8
-
-    # print(args.quant_bits)
-    # print(args.model_name)
-    # print(args.enable_prune)
-#     # model_name = sys.argv[1]
-    # enable_quant = False
-    # enable_prune = False
-    # if model_name[-5:] == "quant":
-        # enable_quant = True
-        # quant_bits = int(sys.argv[2])
-    # elif model_name[-5:] == "prune":
-        # enable_prune = True
-    
-#     if enable_prune:
-        # model = importlib.import_module("prune_model." + model_name)
-    # else:
-        # model = importlib.import_module("model." + model_name)
-    # model_cls = getattr(model, model_name)
-    # if enable_quant:
-        # model_obj = model_cls([None, 32, 32, 3], [None, 100], quant_bits = quant_bits)
-    # else:
-        # model_obj = model_cls([None, 32, 32, 3], [None, 100])
-    # model_obj.build()
-    # data_handle = data_manager.Data_Manager("/Users/zhangfucheng/data/cifar-100-python/train", "/Users/zhangfucheng/data/cifar-100-python/test")
-    # # data_handle = data_manager.Data_Manager("/home/zhangfucheng/Draft/train", "/home/zhangfucheng/Draft/test")
-    # nnUtils.train(model_obj, 128, data_handle, model_name, enable_prune)
- 
 

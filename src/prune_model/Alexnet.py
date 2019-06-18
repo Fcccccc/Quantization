@@ -12,12 +12,12 @@ class Alexnet(normal_base):
     def build(self):
         
         with tf.variable_scope("conv1", reuse = tf.AUTO_REUSE):
-            current_tensor = self.Utils.conv2d(self.X, [3, 3, 3, 64], [2, 2])
+            current_tensor = self.Utils.conv2d(self.X, [3, 3, 3, 64], [2, 2], enable_prune = True)
             current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
             current_tensor = tf.nn.lrn(current_tensor)
 
         with tf.variable_scope("conv2", reuse = tf.AUTO_REUSE):
-            current_tensor = self.Utils.conv2d(current_tensor, [3, 3, 64, 64], [1, 1])
+            current_tensor = self.Utils.conv2d(current_tensor, [3, 3, 64, 64], [1, 1], enable_prune = True)
             current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
             current_tensor = tf.nn.lrn(current_tensor)
 
@@ -27,8 +27,8 @@ class Alexnet(normal_base):
         # current_tensor = tf.nn.max_pool(current_tensor, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = "VALID")
 
         
-        current_tensor = self.Utils.conv2d_bn_relu("conv3", current_tensor, [3, 3, 64, 128], [1, 1])
-        current_tensor = self.Utils.conv2d_bn_relu("conv4", current_tensor, [3, 3, 128, 128], [1, 1])
+        current_tensor = self.Utils.conv2d_bn_relu("conv3", current_tensor, [3, 3, 64, 128], [1, 1], enable_prune = True)
+        current_tensor = self.Utils.conv2d_bn_relu("conv4", current_tensor, [3, 3, 128, 128], [1, 1], enable_prune = True)
         current_tensor = self.Utils.conv2d_bn_relu("conv5", current_tensor, [3, 3, 128, 128], [1, 1], enable_prune = True)
 
 

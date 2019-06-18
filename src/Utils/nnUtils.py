@@ -92,17 +92,19 @@ class Trainer:
             self.prune_op = p.conditional_mask_update_op()
 
         # log
-        if not os.path.exists("log"):
-            os.mkdir("log")
-        self.fd = open("log/" + self.hyperparams['model_name'], "a")
+        log_prefix = "log" + "_quant_{}".format(self.hyperparams['quant_bits']) + "_prune_{}".format(str(self.hyperparams["enable_prune"])) + "/"
+        if not os.path.exists(log_prefix):
+            os.mkdir(log_prefix)
+        self.fd = open(log_prefix + self.hyperparams['model_name'], "a")
         print("model_name = {}, quant_bits = {}, enable_prune = {}".format(self.hyperparams['model_name'], self.hyperparams['quant_bits'], self.hyperparams['target_sparsity']), file = self.fd)
         print(time.asctime(time.localtime(time.time())) + "   train started", file = self.fd)
 
 
         # init_variable
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
-        self.sess = tf.Session(config = config)
+        # config = tf.ConfigProto()
+        # config.gpu_options.allow_growth = True
+        # config.gpu_options.per_process_gpu_memory_fraction = 0.6
+        self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
     def __del__(self):

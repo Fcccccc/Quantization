@@ -11,13 +11,13 @@ class Resnet18(quant_base):
         quant_base.__init__(self, hyperparams)
 
     def build(self):
-        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], quant_bits = 8)
+        current_tensor = self.Utils.quant_conv2d_bn_relu("conv1_1", self.X, [3, 3, 3, 64], [1, 1], quant_bits = 8, enable_prune = True)
 
-        current_tensor = self._quant_residual_block(current_tensor, "res_block1", [3, 3, 64, 64])
-        current_tensor = self._quant_residual_block(current_tensor, "res_block2", [3, 3, 64, 64])
-        current_tensor = self._quant_residual_block(current_tensor, "res_block3", [3, 3, 64, 128], div = True)
-        current_tensor = self._quant_residual_block(current_tensor, "res_block4", [3, 3, 128, 128])
-        current_tensor = self._quant_residual_block(current_tensor, "res_block5", [3, 3, 128, 256], div = True)
+        current_tensor = self._quant_residual_block(current_tensor, "res_block1", [3, 3, 64, 64], enable_prune = True)
+        current_tensor = self._quant_residual_block(current_tensor, "res_block2", [3, 3, 64, 64], enable_prune = True)
+        current_tensor = self._quant_residual_block(current_tensor, "res_block3", [3, 3, 64, 128], div = True, enable_prune = True)
+        current_tensor = self._quant_residual_block(current_tensor, "res_block4", [3, 3, 128, 128], enable_prune = True)
+        current_tensor = self._quant_residual_block(current_tensor, "res_block5", [3, 3, 128, 256], div = True, enable_prune = True)
         current_tensor = self._quant_residual_block(current_tensor, "res_block6", [3, 3, 256, 256], enable_prune = True)
         current_tensor = self._quant_residual_block(current_tensor, "res_block7", [3, 3, 256, 512], div = True, enable_prune = True)
         current_tensor = self._quant_residual_block(current_tensor, "res_block8", [3, 3, 512, 512], enable_prune = True)
@@ -26,14 +26,14 @@ class Resnet18(quant_base):
 
         current_tensor = tf.reshape(current_tensor, [-1, 512])
 
-        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits)
+        self.result    = self.Utils.quant_fc(current_tensor, [512, 100], quant_bits = self.quant_bits, enable_prune = True)
 
     def _quant_residual_block(self, input_tensor, name, kernel, div = False, enable_prune = False):
         if div:
             current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [2, 2], quant_bits = self.quant_bits)
-            shortcut = self.Utils.quant_conv2d_bn(name + "_shortcut", input_tensor, kernel, [2, 2], quant_bits = self.quant_bits)
+            shortcut = self.Utils.quant_conv2d_bn(name + "_shortcut", input_tensor, kernel, [2, 2], quant_bits = self.quant_bits, enable_prune = enable_prune)
         else:
-            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [1, 1], quant_bits = self.quant_bits)
+            current_tensor = self.Utils.quant_conv2d_bn_relu(name + "_conv1", input_tensor, kernel, [1, 1], quant_bits = self.quant_bits, enable_prune = enable_prune)
             shortcut = input_tensor
         kernel[2] = kernel[3]
         current_tensor = self.Utils.quant_conv2d_bn(name + "_conv2", current_tensor, kernel, [1, 1], quant_bits = self.quant_bits, enable_prune = enable_prune)
